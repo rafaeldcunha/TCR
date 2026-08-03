@@ -48,6 +48,42 @@
   .filters button{flex:none;background:#efeee9;border:1px solid transparent;color:#55534d;
     border-radius:20px;padding:6px 13px;font-size:13px;font-weight:600;cursor:pointer}
   .filters button.on{background:var(--ink);color:#fff}
+  .novo{flex:none;background:var(--orange);color:#fff;border:none;border-radius:8px;
+    padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer}
+  .novo:active{transform:scale(.96)}
+  .chipsel{font-family:ui-monospace,monospace;font-size:10.5px;letter-spacing:.03em;
+    text-transform:uppercase;padding:3px 6px;border-radius:6px;border:1px solid var(--line);
+    background:#fff;color:#55534d;cursor:pointer;-webkit-appearance:none;appearance:none}
+  .chipsel.cs-car{background:var(--orange-soft);color:var(--orange-ink);border-color:transparent}
+  .chipsel.cs-ig{background:#f0edf2;color:#5b3a63;border-color:transparent}
+  .chipsel.cs-in{background:var(--linkedin-soft);color:var(--linkedin);border-color:transparent}
+  .delpost{display:block;text-align:right;font-size:12px;color:var(--fix);
+    margin-top:12px;cursor:pointer;font-weight:600}
+
+  /* cards do carrossel */
+  .cards{margin-top:16px;border-top:1px solid var(--line);padding-top:13px}
+  .cards>.chead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .cards>.chead h4{font-family:ui-monospace,monospace;font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted)}
+  .cards>.chead button{background:var(--orange-soft);color:var(--orange-ink);border:none;
+    border-radius:7px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer}
+  .card{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+  .card .cnum{flex:none;width:24px;height:24px;border-radius:7px;background:var(--ink);color:#fff;
+    font-family:ui-monospace,monospace;font-size:11px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;margin-top:2px}
+  .card .cmain{flex:1;min-width:0}
+  .card textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:8px 10px;
+    font-family:inherit;font-size:14px;line-height:1.45;background:#fdfdfc;resize:none;
+    overflow:hidden;min-height:36px}
+  .card textarea:focus{outline:none;border-color:var(--orange);background:#fff}
+  .card .cimg{margin-top:7px}
+  .card .cimg img{width:100%;border-radius:9px;display:block;border:1px solid var(--line)}
+  .card .cdrop{border:1.5px dashed var(--line);border-radius:9px;padding:11px;text-align:center;
+    color:var(--muted);font-size:12px;cursor:pointer;display:block;background:#fdfdfc}
+  .card .cactions{display:flex;gap:12px;margin-top:6px;font-size:12px}
+  .card .cactions span{cursor:pointer;color:var(--muted);font-weight:600}
+  .card .cactions span.rm{color:var(--fix)}
+  .card input[type=file]{display:none}
 
   main{max-width:760px;margin:0 auto;padding:16px 12px}
 
@@ -78,7 +114,9 @@
   .p-body{padding:12px 15px 15px}
   .field{margin-top:12px}
   .flabel{font-family:ui-monospace,monospace;font-size:10.5px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:block}
+    text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:flex;justify-content:space-between;align-items:baseline}
+  .cnt{font-size:10.5px;letter-spacing:.02em;color:var(--muted);font-style:normal}
+  .cnt.over{color:var(--fix);font-weight:700}
   .field textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;
     font-family:inherit;font-size:15px;line-height:1.5;color:var(--ink);background:#fdfdfc;
     resize:none;overflow:hidden;min-height:38px}
@@ -136,7 +174,7 @@
 <header>
   <div class="htop">
     <div class="title">Aprovação de conteúdo <span>TCR</span>
-      <small>Agosto 2026 · WER Digital</small>
+      <small id="mesLabel">carregando</small>
     </div>
     <div class="sync">
       <span class="dot" id="dot"></span>
@@ -151,6 +189,11 @@
 </header>
 
 <div class="controls">
+  <div class="who">
+    <label for="mes">Mês</label>
+    <select id="mes"></select>
+    <button id="btnNovo" class="novo">Novo post</button>
+  </div>
   <div class="who">
     <label for="author">Comentando como</label>
     <select id="author">
@@ -176,21 +219,132 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="config.js"></script>
 <script>
 /* ============================================================
-   CONFIGURAÇÃO · cole aqui os dados do seu projeto Supabase
-   (Settings > API no painel do Supabase)
+   As chaves ficam no arquivo config.js, ao lado deste arquivo.
+   Este arquivo pode ser substituído à vontade sem mexer nelas.
    ============================================================ */
-const SUPABASE_URL = "https://xisjwlmwhsziwbcwkhil.supabase.co";       // ex: https://abcdefgh.supabase.co
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpc2p3bG13aHN6aXdiY3draGlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2ODIzMDcsImV4cCI6MjEwMTI1ODMwN30.oagLeGXy_YLZT3lHLqSTHo3EZP-9oLMijcoD0BMaf0Q";  // a chave "anon public"
-/* ============================================================ */
+const SUPABASE_URL = (window.TCR_CONFIG||{}).url || "";
+const SUPABASE_ANON_KEY = (window.TCR_CONFIG||{}).key || "";
 
 const AKEY='tcr-ago-autor';
 const eixos={1:'Abertura e setor',2:'Mercado e setor',3:'Marca e time',4:'Autoridade e futuro'};
 const icoIG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>';
 const icoIN='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.4c0-1.3-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21h-4z"/></svg>';
 
-let posts=[], comments=[], filter='all', editing=null, saveTimers={};
+let posts=[], comments=[], filter='all', editing=null, saveTimers={}, mes=null, extraMeses=[];
+
+const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+function mesLabel(m){if(!m)return '';const [y,mm]=m.split('-');return MESES[+mm-1]+' '+y;}
+function mesesDisponiveis(){
+  const s=new Set(posts.map(p=>p.mes).filter(Boolean));
+  extraMeses.forEach(m=>s.add(m));
+  return [...s].sort();
+}
+function fillMesSelect(){
+  const sel=document.getElementById('mes');
+  const ms=mesesDisponiveis();
+  if(!mes||!ms.includes(mes))mes=ms[ms.length-1]||null;
+  sel.innerHTML=ms.map(m=>'<option value="'+m+'"'+(m===mes?' selected':'')+'>'+mesLabel(m)+'</option>').join('')
+    +'<option value="__novo">+ adicionar mês</option>';
+  document.getElementById('mesLabel').textContent=(mes?mesLabel(mes):'')+' · WER Digital';
+}
+
+// Limites de texto para as artes (diretriz Joabe)
+const LIM={headline:40, subheadline:80};
+function cntHtml(v,f,id){
+  const len=(v||'').length, max=LIM[f];
+  return '<i class="cnt'+(len>max?' over':'')+'" data-c="'+f+'-'+id+'" data-max="'+max+'">'+len+'/'+max+'</i>';
+}
+
+// ---- cards do carrossel ----
+function getCards(p){
+  if(Array.isArray(p.cards))return p.cards;
+  if(typeof p.cards==='string'&&p.cards.trim()){
+    try{const a=JSON.parse(p.cards);return Array.isArray(a)?a:[];}catch(e){return [];}
+  }
+  return [];
+}
+async function saveCards(id,arr){
+  const p=posts.find(x=>x.id===id); p.cards=arr;
+  try{
+    await api('posts?id=eq.'+id,{method:'PATCH',
+      body:JSON.stringify({cards:arr,updated_at:new Date().toISOString()})});
+    setSync('ok','salvo');
+  }catch(e){setSync('err','erro ao salvar');toast('Não salvou os cards.');}
+}
+function addCard(id){
+  const p=posts.find(x=>x.id===id);
+  const arr=getCards(p).concat([{texto:'',url:null}]);
+  saveCards(id,arr).then(render);
+}
+function removeCard(id,i){
+  if(!confirm('Remover o card '+(i+1)+'?'))return;
+  const p=posts.find(x=>x.id===id);
+  const arr=getCards(p).filter((c,ci)=>ci!==i);
+  saveCards(id,arr).then(render);
+}
+function moveCard(id,i,dir){
+  const p=posts.find(x=>x.id===id);
+  const arr=getCards(p).slice();
+  const j=i+dir; if(j<0||j>=arr.length)return;
+  [arr[i],arr[j]]=[arr[j],arr[i]];
+  saveCards(id,arr).then(render);
+}
+function cardTextSave(id,i,v){
+  const p=posts.find(x=>x.id===id);
+  const arr=getCards(p).slice();
+  if(!arr[i])return; arr[i]=Object.assign({},arr[i],{texto:v});
+  p.cards=arr;
+  setSync('','salvando');
+  clearTimeout(saveTimers['card'+id+i]);
+  saveTimers['card'+id+i]=setTimeout(()=>saveCards(id,arr),700);
+}
+async function uploadCardImg(id,i,file){
+  try{
+    const blob=await resizeImg(file,1400,0.8);
+    const path=id+'-card'+i+'-'+Date.now()+'.jpg';
+    const r=await fetch(SUPABASE_URL+'/storage/v1/object/criativos/'+path,{
+      method:'POST',
+      headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,
+        'Content-Type':'image/jpeg','x-upsert':'true'},
+      body:blob});
+    if(!r.ok)throw new Error(await r.text());
+    const p=posts.find(x=>x.id===id);
+    const arr=getCards(p).slice();
+    arr[i]=Object.assign({},arr[i],{url:SUPABASE_URL+'/storage/v1/object/public/criativos/'+path});
+    await saveCards(id,arr); render(); toast('Imagem do card '+(i+1)+' anexada');
+  }catch(e){toast('Falha no upload do card.');}
+}
+function removeCardImg(id,i){
+  const p=posts.find(x=>x.id===id);
+  const arr=getCards(p).slice();
+  arr[i]=Object.assign({},arr[i],{url:null});
+  saveCards(id,arr).then(render);
+}
+function cardsHtml(p){
+  if(p.formato!=='carrossel')return '';
+  const arr=getCards(p);
+  const items=arr.map((c,i)=>{
+    const img=c.url
+      ?'<div class="imgwrap"><img src="'+esc(c.url)+'" alt="card '+(i+1)+'" loading="lazy">'+
+       '<button data-act="delcardimg" data-id="'+p.id+'" data-i="'+i+'">Remover</button></div>'
+      :'<label class="cdrop" for="cf-'+p.id+'-'+i+'">Anexar imagem do card '+(i+1)+'</label>';
+    return '<div class="card"><div class="cnum">'+(i+1)+'</div><div class="cmain">'+
+      '<textarea data-card="'+p.id+'" data-i="'+i+'" placeholder="Texto do card '+(i+1)+'">'+esc(c.texto)+'</textarea>'+
+      '<div class="cimg">'+img+'</div>'+
+      '<input type="file" id="cf-'+p.id+'-'+i+'" accept="image/*" data-act="cardimg" data-id="'+p.id+'" data-i="'+i+'">'+
+      '<div class="cactions"><span data-act="cardup" data-id="'+p.id+'" data-i="'+i+'">subir</span>'+
+      '<span data-act="carddown" data-id="'+p.id+'" data-i="'+i+'">descer</span>'+
+      '<span class="rm" data-act="delcard" data-id="'+p.id+'" data-i="'+i+'">remover</span></div>'+
+      '</div></div>';
+  }).join('');
+  return '<div class="cards"><div class="chead"><h4>Cards do carrossel ('+arr.length+')</h4>'+
+    '<button data-act="addcard" data-id="'+p.id+'">Adicionar card</button></div>'+
+    (items||'<div style="color:var(--muted);font-size:13px;padding:6px 0">Nenhum card ainda. Toque em adicionar card.</div>')+
+    '</div>';
+}
 
 const configured = SUPABASE_URL.startsWith('https://') && SUPABASE_ANON_KEY.length>30;
 
@@ -231,6 +385,7 @@ async function loadAll(silent){
       api('comentarios?select=*&order=created_at.asc')
     ]);
     posts=p; comments=c;
+    fillMesSelect();
     setSync('ok','sincronizado');
     render();
   }catch(e){
@@ -325,28 +480,34 @@ function resizeImg(file,max,q){
 }
 
 function matches(p){
+  if(p.mes!==mes)return false;
   if(filter==='all')return true;
   if(filter.startsWith('s'))return p.semana===+filter[1];
   return p.status===filter;
 }
 
 function updateProg(){
-  if(!posts.length)return;
-  const ap=posts.filter(p=>p.status==='aprovado').length;
-  const pct=Math.round(ap/posts.length*100);
+  const doMes=posts.filter(p=>p.mes===mes);
+  if(!doMes.length){
+    document.getElementById('progBar').style.width='0%';
+    document.getElementById('progTxt').textContent='0 posts neste mês';
+    document.getElementById('progPct').textContent='';
+    return;
+  }
+  const ap=doMes.filter(p=>p.status==='aprovado').length;
+  const pct=Math.round(ap/doMes.length*100);
   document.getElementById('progBar').style.width=pct+'%';
-  document.getElementById('progTxt').textContent=ap+' de '+posts.length+' aprovados';
+  document.getElementById('progTxt').textContent=ap+' de '+doMes.length+' aprovados';
   document.getElementById('progPct').textContent=pct+'%';
 }
 
 function render(){
   const list=document.getElementById('list');
   if(!configured){
-    list.innerHTML='<div class="setup"><h3>Falta configurar o Supabase</h3>'+
-      'Abra este arquivo, localize o bloco <code>CONFIGURAÇÃO</code> no início do script '+
-      'e cole a URL do projeto e a chave <code>anon public</code>, que ficam em '+
-      '<code>Settings &gt; API</code> no painel do Supabase. Depois rode o '+
-      '<code>setup-supabase.sql</code> no SQL Editor, uma única vez.</div>';
+    list.innerHTML='<div class="setup"><h3>Falta o arquivo config.js</h3>'+
+      'Crie um arquivo chamado <code>config.js</code> no mesmo repositório, com este conteúdo:'+
+      '<br><br><code>window.TCR_CONFIG = { url: "https://SEU_PROJETO.supabase.co", key: "SUA_CHAVE_ANON" };</code>'+
+      '<br><br>A URL e a chave <code>anon</code> ficam em <code>Settings &gt; API</code> no painel do Supabase.</div>';
     return;
   }
   const active=document.activeElement;
@@ -355,8 +516,16 @@ function render(){
   const shown=posts.filter(matches);
   if(!shown.length){list.innerHTML='<div class="empty">Nenhum post neste filtro.</div>';updateProg();return;}
   list.innerHTML=shown.map(p=>{
-    const fmtChip=p.formato==='carrossel'?'<span class="chip c-car">Carrossel</span>':'<span class="chip c-est">Estático</span>';
-    const canalChip=p.canal==='ig'?'<span class="chip c-ig">'+icoIG+'IG</span>':'<span class="chip c-in">'+icoIN+'IN</span>';
+    const wkOpts=[1,2,3,4,5].map(n=>{
+      const lbl=(p.mes==='2026-08'&&eixos[n])?'Sem '+n+' · '+eixos[n]:'Semana '+n;
+      return '<option value="'+n+'"'+(p.semana===n?' selected':'')+'>'+lbl+'</option>';
+    }).join('');
+    const fmtSel='<select class="chipsel'+(p.formato==='carrossel'?' cs-car':'')+'" data-sel="formato" data-id="'+p.id+'">'
+      +'<option value="carrossel"'+(p.formato==='carrossel'?' selected':'')+'>Carrossel</option>'
+      +'<option value="estatico"'+(p.formato==='estatico'?' selected':'')+'>Estático</option></select>';
+    const canalSel='<select class="chipsel '+(p.canal==='ig'?'cs-ig':'cs-in')+'" data-sel="canal" data-id="'+p.id+'">'
+      +'<option value="ig"'+(p.canal==='ig'?' selected':'')+'>IG</option>'
+      +'<option value="in"'+(p.canal==='in'?' selected':'')+'>IN</option></select>';
     const seloTxt={pendente:'Pendente',aprovado:'Aprovado',ajustar:'Ajustar'}[p.status]||'Pendente';
     const needs=p.needs?'<div class="needs">'+esc(p.needs)+'</div>':'';
     const creative=p.criativo_url
@@ -370,23 +539,24 @@ function render(){
     return `
     <div class="post st-${p.status}" data-id="${p.id}">
       <div class="p-head">
-        <span class="chip c-wk">Sem ${p.semana} · ${eixos[p.semana]}</span>
-        ${fmtChip}${canalChip}
+        <select class="chipsel" data-sel="semana" data-id="${p.id}">${wkOpts}</select>
+        ${fmtSel}${canalSel}
         <span class="p-selo selo-${p.status}">${seloTxt}</span>
       </div>
       <div class="p-body">
         ${needs}
-        <div class="field head"><span class="flabel">Headline</span>
+        <div class="field head"><span class="flabel">Headline ${cntHtml(p.headline,'headline',p.id)}</span>
           <textarea data-f="headline" data-id="${p.id}">${esc(p.headline)}</textarea></div>
-        <div class="field"><span class="flabel">Subheadline</span>
+        <div class="field"><span class="flabel">Subheadline ${cntHtml(p.subheadline,'subheadline',p.id)}</span>
           <textarea data-f="subheadline" data-id="${p.id}">${esc(p.subheadline)}</textarea></div>
         <div class="field legenda"><span class="flabel">Legenda</span>
           <textarea data-f="legenda" data-id="${p.id}">${esc(p.legenda)}</textarea></div>
         <div class="creative">
-          <span class="flabel">Criativo</span>
+          <span class="flabel">${p.formato==='carrossel'?'Capa do carrossel':'Criativo'}</span>
           ${creative}
           <input type="file" id="file-${p.id}" accept="image/*" data-act="img" data-id="${p.id}">
         </div>
+        ${cardsHtml(p)}
         <div class="actions">
           <button class="a-ok ${p.status==='aprovado'?'on':''}" data-act="st" data-v="aprovado" data-id="${p.id}">Aprovar</button>
           <button class="a-fix ${p.status==='ajustar'?'on':''}" data-act="st" data-v="ajustar" data-id="${p.id}">Ajustar</button>
@@ -400,6 +570,7 @@ function render(){
             <button data-act="addcmt" data-id="${p.id}">Enviar</button>
           </div>
         </div>
+        <span class="delpost" data-act="delpost" data-id="${p.id}">Excluir post</span>
       </div>
     </div>`;
   }).join('');
@@ -413,12 +584,66 @@ function render(){
 
 document.getElementById('list').addEventListener('input',e=>{
   const t=e.target;
-  if(t.dataset.f){editing=Date.now();autoGrow(t);debounceSave(+t.dataset.id,t.dataset.f,t.value);}
+  if(t.dataset.f){
+    editing=Date.now();autoGrow(t);debounceSave(+t.dataset.id,t.dataset.f,t.value);
+    if(LIM[t.dataset.f]){
+      const c=document.querySelector('.cnt[data-c="'+t.dataset.f+'-'+t.dataset.id+'"]');
+      if(c){c.textContent=t.value.length+'/'+LIM[t.dataset.f];
+        c.classList.toggle('over',t.value.length>LIM[t.dataset.f]);}
+    }
+  }
   else if(t.dataset.act==='cmtbox'){autoGrow(t);}
+  else if(t.dataset.card){editing=Date.now();autoGrow(t);cardTextSave(+t.dataset.card,+t.dataset.i,t.value);}
 });
 document.getElementById('list').addEventListener('change',e=>{
   const t=e.target;
   if(t.dataset.act==='img'&&t.files[0]){uploadCreative(+t.dataset.id,t.files[0]);t.value='';}
+  else if(t.dataset.act==='cardimg'&&t.files[0]){uploadCardImg(+t.dataset.id,+t.dataset.i,t.files[0]);t.value='';}
+  else if(t.dataset.sel){
+    const id=+t.dataset.id, f=t.dataset.sel;
+    const v=f==='semana'?+t.value:t.value;
+    const p=posts.find(x=>x.id===id); p[f]=v;
+    api('posts?id=eq.'+id,{method:'PATCH',
+      body:JSON.stringify({[f]:v,updated_at:new Date().toISOString()})})
+      .then(()=>{setSync('ok','salvo');render();})
+      .catch(()=>{setSync('err','erro ao salvar');toast('Não salvou.');});
+  }
+});
+
+async function novoPost(){
+  if(!mes){toast('Selecione um mês primeiro.');return;}
+  try{
+    const r=await api('posts',{method:'POST',headers:hdrs({'Prefer':'return=representation'}),
+      body:JSON.stringify({mes,semana:1,formato:'estatico',canal:'ig',
+        headline:'',subheadline:'',legenda:'',needs:'',status:'pendente',cards:[]})});
+    await loadAll(true);
+    toast('Post criado no mês '+mesLabel(mes));
+  }catch(e){toast('Não criou o post. O SQL de migração já rodou?');}
+}
+
+async function delPost(id){
+  const p=posts.find(x=>x.id===id);
+  if(p&&p.status==='aprovado'&&!confirm('Este post está APROVADO. Excluir mesmo assim?'))return;
+  if(!confirm('Excluir este post e seus comentários? Não dá pra desfazer.'))return;
+  try{
+    await api('posts?id=eq.'+id,{method:'DELETE'});
+    posts=posts.filter(x=>x.id!==id);render();toast('Post excluído');
+  }catch(e){toast('Não excluiu.');}
+}
+
+document.getElementById('btnNovo').addEventListener('click',novoPost);
+document.getElementById('mes').addEventListener('change',e=>{
+  const v=e.target.value;
+  if(v==='__novo'){
+    const novo=prompt('Novo mês no formato AAAA-MM, por exemplo 2026-09:');
+    if(novo&&/^\d{4}-(0[1-9]|1[0-2])$/.test(novo.trim())){
+      const m=novo.trim();
+      if(!mesesDisponiveis().includes(m))extraMeses.push(m);
+      mes=m;
+    }else if(novo){toast('Formato inválido. Use AAAA-MM.');}
+    fillMesSelect();render();return;
+  }
+  mes=v;fillMesSelect();render();
 });
 document.getElementById('list').addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b)return;
@@ -427,6 +652,12 @@ document.getElementById('list').addEventListener('click',e=>{
   else if(act==='delimg')removeCreative(+b.dataset.id);
   else if(act==='addcmt')addComment(+b.dataset.id);
   else if(act==='delcmt')delComment(+b.dataset.cid);
+  else if(act==='delpost')delPost(+b.dataset.id);
+  else if(act==='addcard')addCard(+b.dataset.id);
+  else if(act==='delcard')removeCard(+b.dataset.id,+b.dataset.i);
+  else if(act==='cardup')moveCard(+b.dataset.id,+b.dataset.i,-1);
+  else if(act==='carddown')moveCard(+b.dataset.id,+b.dataset.i,1);
+  else if(act==='delcardimg')removeCardImg(+b.dataset.id,+b.dataset.i);
 });
 document.getElementById('filters').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
